@@ -51,7 +51,7 @@ export default function SignUp() {
                         });
                         console.log(result);
                         //Route to home screen
-                        router.push('/landing')
+                        router.push('/landing') 
 
                     }
                 }
