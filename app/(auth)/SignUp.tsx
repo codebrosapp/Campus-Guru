@@ -11,35 +11,48 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/configs/FirebaseConfig';
 import {upload} from 'cloudinary-react-native';
 import { cld, options } from '@/configs/CloudinaryConfig';
+import axios from 'axios'
+import { useRouter } from 'expo-router';
+
 
 export default function SignUp() {
     const [profileImage, setProfileImage] = useState<string|undefined>();
     const [fullName, setFullName]=useState<string|undefined>();
     const [email, setEmail]=useState<string|undefined>();
     const [password, setPassword]=useState<string|undefined>();
+    const router = useRouter();
 
-    const onBtnPress = () => {
-        if(!email||!password||fullName)
+    const onBtnPress = () => { 
+        if(!email?.length || !password?.length || !fullName?.length)
         {
             ToastAndroid.show('Please enter all details!',ToastAndroid.BOTTOM);
             return;
         }
 
         createUserWithEmailAndPassword(auth,email,password)
-        .then(async(userCredentials)=>{
-            console.log(userCredentials);
+        .then(async(userCredentails)=>{
+            console.log(userCredentails);
             //Upload Profile Image
              await upload(cld, {
                 file:profileImage,
                 options:options,
-                callback:async(error:any, response:any)=>{
-                    if(error)
+                callback: async(error:any, response:any)=>{
+                    if(error) 
                     {
                         console.log(error)
                     }
                     if(response)
                     {
                         console.log(response?.url)
+                        const result=await axios.post(process.env.EXPO_PUBLIC_HOST_URL+"/user",{
+                          name: fullName,
+                          email: email,
+                          image: response?.url
+                        });
+                        console.log(result);
+                        //Route to home screen
+                        router.push('/landing')
+
                     }
                 }
              })
@@ -84,7 +97,7 @@ export default function SignUp() {
 
         <View>
          
-         <TouchableOpacity onPress={() => pickImage()}>
+         <TouchableOpacity onPress= {pickImage}>
          {profileImage?
            <Image source={{uri:profileImage}} style={styles.profileImage}/> 
         :
