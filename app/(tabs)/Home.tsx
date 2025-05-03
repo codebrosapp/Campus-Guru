@@ -1,14 +1,20 @@
-import { View, Text } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import React from 'react'
 import Colors from '@/data/Colors'
 import Header from '@/components/Home/Header'
 import Category from '@/components/Home/Category'
+import LatestPost from '@/components/Home/LatestPost'
 
 export default function Home() {
   return (
+     <FlatList
+          data={[]}
+          renderItem={null}
+          ListHeaderComponent={
     <View style={{
       padding: 20,
-      paddingTop: 70, // ment to be 40
+      paddingTop: 70,
+      paddingBottom: 100 // ment to be 40
       // backgroundColor: Colors.WHITE
     }}>
     
@@ -17,6 +23,10 @@ export default function Home() {
     {/* Category  */}
       <Category />
     {/* Latest Post  */}
+    <LatestPost/>
     </View>
+      }/>
+
   )
 }
+
