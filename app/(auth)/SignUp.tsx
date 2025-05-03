@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { Image } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -13,6 +13,8 @@ import { upload } from 'cloudinary-react-native';
 import { cld, options } from '@/configs/CloudinaryConfig';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
+import { ToastAndroid, Alert, Platform } from 'react-native';
+
 
 export default function SignUp() {
   const [profileImage, setProfileImage] = useState<string | undefined>();
@@ -24,7 +26,12 @@ export default function SignUp() {
 
   const onBtnPress = () => {
     if (!email?.length || !password?.length || !fullName?.length || !profileImage) {
-      ToastAndroid.show('Please enter all details!', ToastAndroid.BOTTOM);
+      const message = 'Please enter all details!';
+      if (Platform.OS === 'android') {
+        ToastAndroid.show(message, ToastAndroid.BOTTOM);
+      } else {
+        Alert.alert('Incomplete Form', message);
+      }
       return;
     }
 
@@ -58,7 +65,12 @@ export default function SignUp() {
                   console.log('User created successfully, navigating to landing');
                   router.push('/landing');
                 } else {
-                  ToastAndroid.show('Failed to create user', ToastAndroid.BOTTOM);
+                  const message = 'Failed to create user';
+                  if (Platform.OS === 'android') {
+                    ToastAndroid.show(message, ToastAndroid.BOTTOM);
+                  } else {
+                    Alert.alert('Error', message);
+                  }
                 }
                 setLoading(false);
               } catch (e) {
@@ -70,8 +82,14 @@ export default function SignUp() {
         });
       })
       .catch((error) => {
-        const errorMsg = error?.message;
-        ToastAndroid.show(errorMsg, ToastAndroid.BOTTOM);
+        const errorMsg = error?.message || 'An error occurred';
+      
+        if (Platform.OS === 'android') {
+          ToastAndroid.show(errorMsg, ToastAndroid.BOTTOM);
+        } else {
+          Alert.alert('Error', errorMsg);
+        }
+      
         setLoading(false);
       });
   };

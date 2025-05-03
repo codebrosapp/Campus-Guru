@@ -25,10 +25,14 @@ export default function RootLayout() {
           headerTitle: ''
          }}
       />
-      <Stack.Screen name="(auth)/SignIn"
+      <Stack.Screen name="(tabs)"
          options={{
-          headerTransparent: true,
-          headerTitle: ''
+         headerShown: false
+         }}
+      />
+      <Stack.Screen name="add-post/index"
+         options={{
+         headerTitle: "Add new post"
          }}
       />
     </Stack>

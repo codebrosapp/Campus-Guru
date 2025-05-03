@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable, ToastAndroid } from 'react-native'
+import { View, Text, Image, Pressable } from 'react-native'
 import React, { useContext, useState } from 'react'
 import TextInputField from '@/components/Shared/TextInputField'
 import Button from '@/components/Shared/Button'
@@ -8,9 +8,10 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 import axios from 'axios'
 import { auth } from '@/configs/FirebaseConfig'
 import { AuthContext } from '@/context/AuthContext'
+import { ToastAndroid, Alert, Platform } from 'react-native';
+
 
 export default function SignIn() {
-  console.log("Sign in button clicked"); 
 
   const router = useRouter();
   const [email, setEmail] = useState<string | undefined>();
@@ -19,11 +20,16 @@ export default function SignIn() {
   const {user, setUser}=useContext(AuthContext);
 
   const onSignInBtnClick= () => {
-
-       if(!email||!password){
-        ToastAndroid.show('Enter Email & Password', ToastAndroid.BOTTOM)
-        return;
-       }
+    console.log("Sign in button clicked"); 
+     
+    if (!email || !password) {
+      if (Platform.OS === 'android') {
+        ToastAndroid.show('Enter Email & Password', ToastAndroid.BOTTOM);
+      } else {
+        Alert.alert('Missing Info', 'Enter Email & Password');
+      }
+      return;
+    }
        setLoading(true);
        signInWithEmailAndPassword(auth, email, password)
        .then(async(resp)=>{
@@ -36,11 +42,16 @@ export default function SignIn() {
             //Save to Context to share across application
           }
           setLoading(false);
-       }).catch(e=>{
-        console.log("Sign-in error:", e); 
+       }).catch((e) => {
+        console.log("Sign-in error:", e);
         setLoading(false);
-        ToastAndroid.show('Incorrect email & Password',ToastAndroid.BOTTOM)
-       })
+        if (Platform.OS === 'android') {
+          ToastAndroid.show('Incorrect email & Password', ToastAndroid.BOTTOM);
+        } else {
+          Alert.alert('Login Failed', 'Incorrect email & Password');
+        }
+      });
+     
   }
   return (
     <View style={{
