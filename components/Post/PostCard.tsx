@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, Image } from 'react-native'
 import React, { useState } from 'react'
 import UserAvatar from './UserAvatar'
 import Colors from '@/data/Colors'
+import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 interface Post {
     id: number;
@@ -31,7 +33,35 @@ export default function PostCard({post}: any) {
   style={styles.postImage}
   onError={(error) => console.error("Image load error:", post.imageurl, error)}
 />
+
+
+    <View style={{
+      marginTop: 10,
+      display: 'flex',
+      flexDirection: 'row',
+      gap: 20,
+      alignItems: 'center'
+    }}>
+      <View style={styles.subContainer}>
+      <AntDesign name="like2" size={24} color="black" />
+      <Text style={{fontSize: 17, color: Colors.GRAY }}>25</Text>
+      </View>
+      <View style={styles.subContainer}>
+      <MaterialCommunityIcons name="comment-text-outline" size={24} color="black" />
+      <Text style={{fontSize: 17, color: Colors.GRAY }}>25</Text>
+      </View>
     </View>
+
+  <Text style={{
+    marginTop: 7,
+    color: Colors.GRAY
+  }}>
+    View all comment
+  </Text>
+
+    </View>
+
+    
   )
 }
 
@@ -56,4 +86,10 @@ const styles = StyleSheet.create({
       marginBottom: 15,
       borderRadius: 10,
     },
+    subContainer:{
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 7
+    }
   });

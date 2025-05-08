@@ -29,7 +29,7 @@ export default function WritePost() {
   const router=useRouter();
     
   const onPostBtnClick = async() => {
-
+    
     if(!content) {
       const message='Please enter content';
         if (Platform.OS === 'android') {
@@ -134,7 +134,7 @@ export default function WritePost() {
       onPress={()=>onPostBtnClick()}
       loading={loading}
       />
-    </View>
+    </View> 
   )
 }
 

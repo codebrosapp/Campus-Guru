@@ -35,6 +35,11 @@ export default function RootLayout() {
          headerTitle: "Add new post"
          }}
       />
+      <Stack.Screen name="explore-clubs/index"
+         options={{
+         headerTitle: "Explore clubs"
+         }}
+      />
     </Stack>
     </AuthContext.Provider>
   )
