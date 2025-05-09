@@ -35,9 +35,9 @@ export default function LandingScreen() {
         }}>Your college news, Update in your pocket , Join the club, Register for new events and Many More</Text>
 
         <Button text='Get Started' 
-        onPress={()=> router.push('/(auth)/SignUp')} loading={loading}/>
+        onPress={()=> router.push('/SignUp')} loading={loading}/>
 
-        <Pressable onPress={()=>router.push('/(auth)/SignIn')}>
+        <Pressable onPress={()=>router.push('/SignIn')}>
 
         <Text style={{
                fontSize: 16,

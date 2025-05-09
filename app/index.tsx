@@ -32,11 +32,11 @@ export default function Index() {
     return () => unsubscribe(); // clean up on unmount
   }, []);
 
- {/* useEffect(() => {
+ useEffect(() => {
     if (user) {
       router.replace("/(tabs)/Home");
     }
-  }, [user]);*/}
+  }, [user]);
 
 
 

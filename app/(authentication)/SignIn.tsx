@@ -40,6 +40,7 @@ export default function SignIn() {
             console.log(result.data)
             setUser(result?.data);
             //Save to Context to share across application
+             router.replace('/(tabs)/Home');
           }
           setLoading(false);
        }).catch((e) => {
@@ -84,7 +85,7 @@ export default function SignIn() {
               loading={loading}
             />
 
-            <Pressable onPress={()=>router.push('/(auth)/SignUp')}>
+            <Pressable onPress={()=>router.push('/(authentication)/SignUp')}>
             
                     <Text style={{
                            fontSize: 16,

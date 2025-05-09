@@ -6,9 +6,11 @@ type ButtonProps = {
   text: string;
   onPress: () => void;
   loading?: boolean;
+  outline?: boolean;
 };
 
-export default function Button({ text, onPress, loading = false }: ButtonProps) {
+export default function Button({ text, onPress, loading = false, outline = false }: ButtonProps) {
+  const isSolid = loading || !outline;
   return (
     <TouchableOpacity
       onPress={!loading ? onPress : undefined} // prevent multiple presses
@@ -16,20 +18,22 @@ export default function Button({ text, onPress, loading = false }: ButtonProps) 
       disabled={loading} // disables interaction
       style={{
         padding: 15,
-        backgroundColor: Colors.PRIMARY,
+        backgroundColor: outline ? Colors.WHITE : Colors.PRIMARY,
+        borderWidth: outline ? 1 : 0,
+        borderColor: Colors.PRIMARY ,
         marginTop: 15,
         borderRadius: 10,
         opacity: loading ? 0.6 : 1, // visual feedback
       }}
     >
       {loading ? (
-        <ActivityIndicator color={Colors.WHITE} />
+        <ActivityIndicator color={isSolid? Colors.PRIMARY : Colors.WHITE} />
       ) : (
         <Text
           style={{
             fontSize: 18,
             textAlign: 'center',
-            color: Colors.WHITE,
+            color: outline ? Colors.PRIMARY : Colors.WHITE,
           }}
         >
           {text}

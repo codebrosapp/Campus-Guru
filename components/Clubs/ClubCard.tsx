@@ -22,13 +22,23 @@ export default function ClubCard(club: CLUB) {
   const onFollowBtnClick = async () => {
     setLoading(true);
     try {
-      const endpoint = followed ? 'unfollow-club' : 'clubfollower';
-      const result = await axios.post(`${process.env.EXPO_PUBLIC_HOST_URL}/${endpoint}`, {
-        u_email: user?.email,
-        clubId: club.id,
-      });
-
-      console.log(result.data);
+      if (followed) {
+        await axios.delete(`${process.env.EXPO_PUBLIC_HOST_URL}/clubfollower`, {
+          data: {
+            u_email: user?.email,
+            clubId: club.id,
+          },
+        });
+      } else {
+        const result = await axios.post(`${process.env.EXPO_PUBLIC_HOST_URL}/clubfollower`, {
+          u_email: user?.email,
+          clubId: club.id,
+        });
+        if (result.data.message === "Already following") {
+          console.log("Already following this club");
+        }
+      }
+  
       setFollowed(!followed);
     } catch (error) {
       console.error('Follow/Unfollow error:', error);
@@ -36,6 +46,7 @@ export default function ClubCard(club: CLUB) {
       setLoading(false);
     }
   };
+  
 
   return (
     <View style={{
@@ -58,6 +69,7 @@ export default function ClubCard(club: CLUB) {
       <Button
         text={followed ? 'Unfollow' : 'Follow'}
         loading={loading}
+        outline={!followed}
         onPress={onFollowBtnClick}
       />
     </View>

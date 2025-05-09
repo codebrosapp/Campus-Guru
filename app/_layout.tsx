@@ -19,10 +19,16 @@ export default function RootLayout() {
         headerShown: false
       }} 
       /> 
-      <Stack.Screen name="(auth)/SignUp"
+      <Stack.Screen name="(authentication)/SignUp"
+         options={{
+          headerShown: false
+
+         }}
+      />
+      <Stack.Screen name="(authentication)/SignIn"
          options={{
           headerTransparent: true,
-          headerTitle: ''
+         headerShown: false
          }}
       />
       <Stack.Screen name="(tabs)"
