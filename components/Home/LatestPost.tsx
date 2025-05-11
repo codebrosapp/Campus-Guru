@@ -9,7 +9,7 @@ interface Post {
   id: number;
   content: string;
   imageurl: string;
-  visiblein: string;
+  visiblein: number;
   createon: string;
   createdby: string;
 }
@@ -19,15 +19,21 @@ export default function LatestPost() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const tabOptions = ['Public', 'SRC', 'COMHSSA', 'NUENSA', 'COSSA'];
+  const tabOptions = [
+    { label: 'Public', value: 0 },
+    { label: 'Codies', value: 1 },
+    { label: 'Football Team', value: 2 },
+  ];
 
   useEffect(() => {
-    GetPosts(tabOptions[selectedTab]);
+    GetPosts(tabOptions[selectedTab].value);
   }, [selectedTab]);
 
-  const GetPosts = async (visibleIn: string) => {
+  const GetPosts = async (visibleIn: number) => {
     setLoading(true)
-      const result = await axios.get(`${process.env.EXPO_PUBLIC_HOST_URL}/post?visibleIn=${visibleIn}&orderField=id`);
+    console.log("Sending club value:", visibleIn);
+    
+      const result = await axios.get(`${process.env.EXPO_PUBLIC_HOST_URL}/post?club=${visibleIn}&orderField=id`);
       console.log("Fetched posts:", result.data);
       setPosts(result.data);
       setLoading(false);
@@ -50,7 +56,7 @@ export default function LatestPost() {
                 },
               ]}
             >
-              {tab}
+              {tab.label}
             </Text>
           </Pressable>
         ))}

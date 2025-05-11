@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ToastAndroid, Alert, Platform} from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Colors from '@/data/Colors'
 import DropDownPicker from 'react-native-dropdown-picker'
 import Button from '../Shared/Button';
@@ -20,13 +20,14 @@ export default function WritePost() {
   const {user}=useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [item, setItems] = useState([
-    {label: 'Public', value: 'Public'},
-    {label: 'SRC', value: 'SRC'},
-    {label: 'COMHSSA', value: 'COMHSSA'},
-    {label: 'NUENSA', value: 'ABCD Club'},
-    {label: 'COSSA', value: 'COSSA'},
+    {label: 'Public', value: 0},
   ])
   const router=useRouter();
+
+  useEffect(() => {
+    GetUserFollowedClubs();
+  }, []);
+  
     
   const onPostBtnClick = async() => {
     
@@ -85,6 +86,20 @@ export default function WritePost() {
         setSelectedImage(result.assets[0].uri);
       }
     };
+
+    const GetUserFollowedClubs=async()=>{
+      const result=await axios.get(process.env.EXPO_PUBLIC_HOST_URL+"/clubfollower?u_email="+user?.email)
+      console.log(result?.data);
+     const data = result.data?.map((item: any) => ({
+      label:item?.name,
+      value:item.club_id
+     }));
+
+     console.log(data)
+     setItems(prev=>[...prev,...data])
+    //  const clubIds = result.data.map((item: any) => item.club_id);
+      // setFollowedClubSet(new Set(clubIds)); 
+    }
 
   return (
     <View>

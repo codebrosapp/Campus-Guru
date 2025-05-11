@@ -65,6 +65,7 @@ export async function DELETE(request: Request) {
 }
 
 
+
 export async function GET(request: Request) {
   try {
     const u_email = new URL(request.url).searchParams.get("u_email");
@@ -77,16 +78,19 @@ export async function GET(request: Request) {
     }
 
     const result = await pool.query(
-      `SELECT * FROM clubfollowers WHERE u_email = $1`,
-      [u_email]
+      `SELECT clubs.name, clubfollowers.* FROM clubs
+       INNER JOIN clubfollowers ON clubs.id = clubfollowers.club_id
+       WHERE clubfollowers.u_email = $1`,
+      [u_email]  // ✅ parameter provided correctly
     );
 
     return new Response(JSON.stringify(result.rows), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
+
   } catch (error) {
-    console.error("Error fetching followers:", error, request.url);
+    console.error("Error fetching followers:", error);
     return new Response(JSON.stringify({ message: "Error fetching followers" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

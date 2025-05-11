@@ -11,7 +11,8 @@ type CLUB = {
   club_logo: string,
   about: string,
   createdon: string,
-  isFollowed: boolean
+  isFollowed: boolean,
+  refreshData:()=>void
 }
 
 export default function ClubCard(club: CLUB) {
@@ -43,6 +44,8 @@ export default function ClubCard(club: CLUB) {
     } catch (error) {
       console.error('Follow/Unfollow error:', error);
     } finally {
+
+      //club.refreshData()
       setLoading(false);
     }
   };

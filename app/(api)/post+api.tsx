@@ -5,10 +5,10 @@ export async function POST(request: Request) {
 
   try {
     const result = await pool.query(
-      `INSERT INTO post (content, imageurl, visiblein, createon, createdby)
-       VALUES ($1, $2, $3, DEFAULT, $4)
+      `INSERT INTO post (content, imageurl, createon, createdby, club)
+       VALUES ($1, $2, DEFAULT, $3, $4)
        RETURNING *`,
-      [content, imageUrl, visibleIn, email]
+      [content, imageUrl, email, visibleIn]
     );
 
     return new Response(JSON.stringify(result.rows[0]), {
@@ -28,25 +28,21 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const visibleIn = url.searchParams.get("visibleIn") || "Public";  // Default to 'Public'
-  const orderField = url.searchParams.get("orderField") || "id";  // Default to 'id'
+  const clubParam = url.searchParams.get("club");
+  const club: number | null = clubParam ? parseInt(clubParam, 10) : null;
+  const orderField = url.searchParams.get("orderField") || "id";
 
   // Whitelist allowed order fields to avoid SQL injection
   const allowedFields = ["id", "createon", "content"];
   const safeOrderField = allowedFields.includes(orderField) ? orderField : "id";
 
-  // To handle multiple visibleIn values, we can use an array
-  const validVisibleInValues = ["Public", "SRC", "COMHSSA", "NUENSA", "COSSA"];
-
-  const safeVisibleIn = validVisibleInValues.includes(visibleIn) ? visibleIn : "Public"; // Defaults to 'Public' if invalid
-
   try {
     const result = await pool.query(
       `SELECT * FROM post
        INNER JOIN users ON post.createdby = users.email
-       WHERE visiblein = $1
+       WHERE post.club = $1
        ORDER BY post.${safeOrderField} DESC`,
-      [safeVisibleIn]  // Use the dynamic value safely
+      [club] // Directly use the parsed integer 'club'
     );
 
     return new Response(JSON.stringify(result.rows), {

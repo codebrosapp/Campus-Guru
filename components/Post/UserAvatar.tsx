@@ -9,6 +9,7 @@ type USER_AVATAR={
     image:string,
     date:string
 }
+                // {moment(new Date(date)).isValid() ? moment(date).fromNow() : 'Invalid date'}
 
 export default function UserAvatar({name,image,date}:USER_AVATAR) {
   return (
@@ -36,7 +37,8 @@ export default function UserAvatar({name,image,date}:USER_AVATAR) {
             }}>{name}</Text>
             <Text style={{
                 color: Colors.GRAY
-            }}>{moment(date).fromNow()}</Text>
+            }}> {moment(new Date(date)).isValid() ? moment(date).fromNow() : 'online'}</Text>
+                 
        </View>
        </View>
        <Ionicons name="ellipsis-vertical" size={24} color="black" />

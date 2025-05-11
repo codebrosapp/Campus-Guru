@@ -20,22 +20,33 @@ export default function ExploreClubs() {
     const [clubList, setClubList]= useState<CLUB[] | []>([])
     const {user}=useContext(AuthContext)
     const [followedClubSet, setFollowedClubSet] = useState<Set<number>>(new Set());
+    const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
         GetAllClubs();
     },[])
 
 
-    const GetAllClubs = async () => {
+   
+
+      const GetAllClubs = async () => {
+        setLoading(true);
         try {
-          const result = await axios.get(process.env.EXPO_PUBLIC_HOST_URL+'/clubs');
-          console.log("CLUBS RESPONSE:", result.data);
-          setClubList(result.data); 
-          GetUserFollowedClubs();// or .clubs based on actual response
+          const [clubsRes, followedRes] = await Promise.all([
+            axios.get(process.env.EXPO_PUBLIC_HOST_URL + '/clubs'),
+            axios.get(process.env.EXPO_PUBLIC_HOST_URL + '/clubfollower?u_email=' + user?.email),
+          ]);
+      
+          const followedIds = followedRes.data.map((item: any) => item.club_id);
+          setFollowedClubSet(new Set(followedIds));
+          setClubList(clubsRes.data);
         } catch (error) {
-          console.error("Error fetching clubs:", error);
+          console.error("Error fetching clubs/followed:", error);
+        } finally {
+          setLoading(false);
         }
       };
+      
 
       const GetUserFollowedClubs=async()=>{
         const result=await axios.get(process.env.EXPO_PUBLIC_HOST_URL+"/clubfollower?u_email="+user?.email)
@@ -72,8 +83,12 @@ export default function ExploreClubs() {
     <FlatList 
       data={clubList}
       numColumns={2}
-      renderItem={({ item }) => (
-        <ClubCard {...item} isFollowed={isFollowed(item.id)} />
+      onRefresh={GetAllClubs}
+      refreshing={loading}
+      renderItem={({ item: CLUB, index }) => (
+        <ClubCard {...CLUB} isFollowed={isFollowed(CLUB.id)} 
+        refreshData={GetAllClubs}
+        />
       )}
     />
 
